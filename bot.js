@@ -260,7 +260,7 @@ async function handleHelpCommand(interaction) {
     const helpEmbed = new EmbedBuilder()
         .setColor('#4ECDC4')
         .setTitle('Supra Testnet Faucet Bot')
-        .setDescription('Get free testnet tokens for developing on the Supra blockchain!')
+        .setDescription('Get testnet tokens for developing on the Supra!')
         .addFields([
             {
                 name: '📋 Commands',
