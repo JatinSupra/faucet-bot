@@ -8,7 +8,7 @@ dotenv.config();
 // Configuration
 const CONFIG = {
     FAUCET_API_URL: 'https://rpc-testnet.supra.com/rpc/v3/wallet/faucet/',
-    RATE_LIMIT_WINDOW: 900000, // 1 hour in milliseconds
+    RATE_LIMIT_WINDOW: 3600000, // 1 hour in milliseconds
     MAX_REQUESTS_PER_HOUR: 3, // Maximum requests per user per hour
     COOLDOWN_BETWEEN_REQUESTS: 300000, // 5 minutes between requests
     BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
@@ -301,8 +301,8 @@ async function handleFaucetCommand(interaction) {
 async function handleHelpCommand(interaction) {
     const helpEmbed = new EmbedBuilder()
         .setColor('#4ECDC4')
-        .setTitle('Supra Testnet Faucet Bot')
-        .setDescription('Get Supra L1 Testnet tokens for developing your dapps!')
+        .setTitle('🚿 Supra Testnet Faucet Bot')
+        .setDescription('Get free testnet tokens for developing on the Supra blockchain!')
         .addFields([
             {
                 name: '📋 Commands',
@@ -337,11 +337,17 @@ async function handleStatusCommand(interaction) {
     const now = Date.now();
     
     let requestsThisHour = 0;
+    let requestsToday = 0;
     let nextRequestTime = null;
     
     if (userRequests.has(userId)) {
         const requests = userRequests.get(userId);
         requestsThisHour = requests.filter(timestamp => now - timestamp < CONFIG.RATE_LIMIT_WINDOW).length;
+    }
+    
+    if (userDailyRequests.has(userId)) {
+        const dailyRequests = userDailyRequests.get(userId);
+        requestsToday = dailyRequests.filter(timestamp => now - timestamp < CONFIG.DAILY_LIMIT_WINDOW).length;
     }
     
     if (userCooldowns.has(userId)) {
@@ -362,15 +368,13 @@ async function handleStatusCommand(interaction) {
                 inline: true
             },
             {
-                name: '⏰ Next Request Available',
-                value: nextRequestTime ? `<t:${Math.floor(nextRequestTime / 1000)}:R>` : 'Now!',
+                name: '📅 Requests Today',
+                value: `${requestsToday}/${CONFIG.DAILY_LIMIT}`,
                 inline: true
             },
             {
-                name: '🔄 Hour Resets',
-                value: userRequests.has(userId) && userRequests.get(userId).length > 0 
-                    ? `<t:${Math.floor((userRequests.get(userId)[0] + CONFIG.RATE_LIMIT_WINDOW) / 1000)}:R>`
-                    : 'N/A',
+                name: '⏰ Next Request Available',
+                value: nextRequestTime ? `<t:${Math.floor(nextRequestTime / 1000)}:R>` : 'Now!',
                 inline: true
             }
         ])
