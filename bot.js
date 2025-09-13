@@ -7,7 +7,7 @@ dotenv.config();
 
 // Configuration
 const CONFIG = {
-    FAUCET_API_URL: 'https://rpc-testnet.supra.com/rpc/v3/wallet/faucet/',
+    FAUCET_API_URL: 'https://rpc-testnet.supra.com/rpc/v1/wallet/faucet/',
     RATE_LIMIT_WINDOW: 3600000,
     MAX_REQUESTS_PER_HOUR: 3,
     COOLDOWN_BETWEEN_REQUESTS: 300000,
